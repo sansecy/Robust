@@ -1,0 +1,41 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.2.2'
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+        google()
+    }
+    tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
+}
+
+task clean(type: Delete) {
+    group "build"
+    delete rootProject.buildDir
+    dependsOn subprojects.collect { it.getTasksByName('clean', false) }
+}
+tasks.create('publishToMavenLocal'){
+    group "publishing"
+    dependsOn subprojects.collect { it.getTasksByName('publishToMavenLocal', false) }
+}
+tasks.create('publish'){
+    group "publishing"
+    dependsOn subprojects.collect { it.getTasksByName('publish', false) }
+}
+tasks.create('jar'){
+    group "build"
+    dependsOn subprojects.collect { it.getTasksByName('jar', false) }
+    dependsOn subprojects.collect { it.getTasksByName('assembleRelease', false) }
+}

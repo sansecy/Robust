@@ -1,5 +1,12 @@
 include ':app'
-include ':autopatchbase'
-include ':gradle-plugin'
-include ':patch'
-include ':auto-patch-plugin'
+includeBuild("plugin-project") {
+    //    compileOnly "com.meituan.robust:echo-lib:$common_versions.echo_version"
+    //    compileOnly "com.meituan.robust:runtime-echo:$common_versions.echo_version"
+    //开发阶段可以使用includeBuild直接使用本地依赖
+def echo_version = VERSION_NAME
+dependencySubstitution {
+    substitute module("com.meituan.robust:auto-patch-plugin:$echo_version") using project(':auto-patch-plugin')
+    substitute module("com.meituan.robust:gradle-plugin:$echo_version") using project(':gradle-plugin')
+    substitute module("com.meituan.robust:patch:$echo_version") using project(':patch')
+}
+}

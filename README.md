@@ -27,7 +27,7 @@ Robust is an Android HotFix solution with high compatibility and high stability.
 	//apply plugin: 'auto-patch-plugin'
 	apply plugin: 'robust'
 
-	compile 'com.meituan.robust:robust:0.4.99'
+	implementation 'com.meituan.robust:robust:0.4.99'
 
 2. Add below codes in the outest project's build.gradle file.
 

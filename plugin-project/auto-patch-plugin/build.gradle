@@ -1,0 +1,34 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+compileGroovy {
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+}
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+// https://mvnrepository.com/artifact/com.android.tools.build/gradle
+    implementation 'com.android.tools.build:gradle:4.2.2'
+
+    implementation 'org.javassist:javassist:3.20.0-GA'
+    implementation files("libs/d8.jar")
+//    implementation 'com.meituan.robust:autopatchbase:' + VERSION_NAME
+    implementation project(':autopatchbase')
+}
+apply from: '../../gradle_mvn_push.gradle'
+jar {
+    from {
+        configurations.runtimeClasspath.collect {
+            if (it.name == "d8.jar") {
+                println it
+                it
+            }
+//            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}

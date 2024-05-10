@@ -1,0 +1,36 @@
+apply plugin: 'groovy'
+apply plugin: 'java'
+compileGroovy {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+repositories {
+    google()
+    mavenCentral()
+    mavenLocal()
+//    maven {
+//        allowInsecureProtocol = true
+//        url "http://depot.sankuai.com/nexus/content/groups/public/"
+//    }
+    jcenter()
+
+}
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+// https://mvnrepository.com/artifact/com.android.tools.build/gradle
+    implementation 'com.android.tools.build:gradle:4.2.2'
+
+    implementation 'org.javassist:javassist:3.20.0-GA'
+    implementation fileTree(dir: "./src/main/libs", include: ['*.jar'])
+    implementation project(':autopatchbase')
+//    implementation 'com.meituan.robust:autopatchbase:0.4.93'
+    implementation 'org.ow2.asm:asm:9.6'
+}
+
+apply from: '../../gradle_mvn_push.gradle'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}

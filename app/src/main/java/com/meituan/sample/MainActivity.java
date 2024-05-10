@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.meituan.robust.PatchExecutor;
+import com.meituan.robust.patch.annotaion.Modify;
+
 /**
  * For users of Robust you may only to use MainActivity or SecondActivity,other classes are used for test.<br>
  * <br>
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         button = (Button) findViewById(R.id.button);
         textView = (TextView) findViewById(R.id.textView);
         Button patch = (Button) findViewById(R.id.patch);
+        TextView robust = (TextView) findViewById(R.id.robust);
+        robust.setText("22222");
         //beigin to patch
         patch.setOnClickListener(new View.OnClickListener() {
             @Override

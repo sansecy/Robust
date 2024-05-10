@@ -26,12 +26,12 @@
         <patchLog>false</patchLog>
 
         <!--项目是否支持progaurd-->
-        <proguard>true</proguard>
-        <!--<proguard>false</proguard>-->
+<!--        <proguard>true</proguard>-->
+        <proguard>false</proguard>
 
         <!--项目是否支持ASM进行插桩，默认使用ASM，推荐使用ASM，Javaassist在容易和其他字节码工具相互干扰-->
         <useAsm>true</useAsm>
-        <!--<useAsm>false</useAsm>-->
+<!--        <useAsm>false</useAsm>-->
 
         <!--针对Java8级别的Lambda表达式，编译为private级别的javac函数，此时由开发者决定是否进行插桩处理-->
         <forceInsertLambda>true</forceInsertLambda>

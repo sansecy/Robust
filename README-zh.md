@@ -28,7 +28,7 @@
 	apply plugin: 'robust'
 		
 		
-	compile 'com.meituan.robust:robust:0.4.99'
+	implementation 'com.meituan.robust:robust:0.4.99'
 		
 	```
  2. 在整个项目的build.gradle加入classpath

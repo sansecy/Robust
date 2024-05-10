@@ -1,15 +1,14 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
-//apply plugin: 'auto-patch-plugin'
-apply plugin: 'robust'
+//apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'auto-patch-plugin'
+//apply plugin: 'robust'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId "com.meituan.robust.sample"
         minSdkVersion 9
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
     }
@@ -30,14 +29,15 @@ android {
     }
     buildTypes {
         release {
-//            minifyEnabled false
-            minifyEnabled true
+            debuggable false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.meituan
         }
         debug {
-            minifyEnabled true
-//            minifyEnabled false
+            signingConfig signingConfigs.meituan
+            debuggable true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -62,14 +62,16 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 dependencies {
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'com.google.code.gson:gson:2.3.1'
-    compile 'com.android.support:design:25.4.0'
-    compile 'org.javassist:javassist:3.20.0-GA'
-    compile project(path: ':patch')
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:25.3.1'
+    implementation 'com.squareup.okhttp:okhttp:2.5.0'
+    implementation 'com.google.code.gson:gson:2.3.1'
+    implementation 'com.android.support:design:25.4.0'
+    implementation 'org.javassist:javassist:3.20.0-GA'
+//    implementation project(path: ':patch')
+    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "com.meituan.robust:patch:$VERSION_NAME"
 }

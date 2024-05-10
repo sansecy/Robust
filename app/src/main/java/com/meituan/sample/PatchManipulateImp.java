@@ -92,7 +92,7 @@ public class PatchManipulateImp extends PatchManipulate {
     public void copy(String srcPath,String dstPath) throws IOException {
         File src=new File(srcPath);
         if(!src.exists()){
-            throw new RuntimeException("source patch does not exist ");
+            throw new RuntimeException("source patch does not exist :" + src);
         }
         File dst=new File(dstPath);
         if(!dst.getParentFile().exists()){

@@ -2,7 +2,6 @@ package com.meituan.sample;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
@@ -24,6 +23,9 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
     protected static String name = "SecondActivity";
     private ListView listView;
     private String[] multiArr = {"列表1", "列表2", "列表3", "列表4"};
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +35,7 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         TextView textView = (TextView) findViewById(R.id.secondtext);
         textView.setOnClickListener(v -> {
 //                    RobustModify.modify();
+                    textView.setText(getTextInfo());
                     Log.d("robust", " onclick  in Listener");
                 }
         );
@@ -43,13 +46,20 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         BaseAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, multiArr);
         listView.setAdapter(adapter);
         printLog("robust", new String[][]{new String[]{"1", "2", "3"}, new String[]{"4", "5", "6"}});
+
+        TestModel testModel = new TestModel();
+        testModel.name = "bob";
+        testModel.age = 19;
+        Log.d(TAG, "onCreate() called with: savedInstanceState = [" + testModel.toString() + "]");
     }
 
-//    @Modify
+    private static final String TAG = "SecondActivity";
+    @Modify
     public String getTextInfo() {
         getArray();
-        return "error occur " ;
-//        return "error fixed";
+
+//        return "error occur " ;
+        return "error fixed";
     }
 
     @Add

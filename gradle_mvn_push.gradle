@@ -17,4 +17,18 @@ publishing {
             }
         }
     }
+    repositories {
+        Properties properties = new Properties()
+        def propertiesFile = project.rootProject.file('local.properties')
+        if (propertiesFile.exists()) {
+            properties.load(propertiesFile.newDataInputStream())
+            def publishLocal = properties.getProperty('publish.local')
+            println "publishLocal:" + publishLocal
+            maven {
+                url = publishLocal
+            }
+        }else {
+            mavenLocal()
+        }
+    }
 }

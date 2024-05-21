@@ -48,7 +48,7 @@ public class PatchesControlFactory {
             accessDispatchMethodBody.append("try{");
         }
         if (Constants.isLogging) {
-            accessDispatchMethodBody.append("  android.util.Log.d(\"robust\",\"arrivied in AccessDispatch \"+methodName+\" paramArrayOfObject  \" +paramArrayOfObject);");
+            accessDispatchMethodBody.append("  com.meituan.robust.RobustLog.d(\"robust\",\"arrivied in AccessDispatch \"+methodName+\" paramArrayOfObject  \" +paramArrayOfObject);");
         }
         //create patch instance
         accessDispatchMethodBody.append(patchClass.getName() + " patch= null;\n");
@@ -56,7 +56,7 @@ public class PatchesControlFactory {
         accessDispatchMethodBody.append(" if (isStatic.equals(\"false\")) {\n");
         accessDispatchMethodBody.append(" if (keyToValueRelation.get(paramArrayOfObject[paramArrayOfObject.length - 1]) == null) {\n");
         if (Constants.isLogging) {
-            accessDispatchMethodBody.append("  android.util.Log.d(\"robust\",\"keyToValueRelation not contain\" );");
+            accessDispatchMethodBody.append("  com.meituan.robust.RobustLog.d(\"robust\",\"keyToValueRelation not contain\" );");
         }
         accessDispatchMethodBody.append("patch=new " + patchClass.getName() + "(paramArrayOfObject[paramArrayOfObject.length - 1]);\n");
         accessDispatchMethodBody.append(" keyToValueRelation.put(paramArrayOfObject[paramArrayOfObject.length - 1], null);\n");
@@ -66,13 +66,13 @@ public class PatchesControlFactory {
         accessDispatchMethodBody.append("}\n");
         accessDispatchMethodBody.append("else{");
         if (Constants.isLogging) {
-            accessDispatchMethodBody.append("  android.util.Log.d(\"robust\",\"static method forward \" );");
+            accessDispatchMethodBody.append("  com.meituan.robust.RobustLog.d(\"robust\",\"static method forward \" );");
         }
         accessDispatchMethodBody.append("patch=new " + patchClass.getName() + "(null);\n");
         accessDispatchMethodBody.append("}");
         accessDispatchMethodBody.append("String methodNo=$1.split(\":\")[3];\n");
         if (Constants.isLogging) {
-            accessDispatchMethodBody.append("  android.util.Log.d(\"robust\",\"assemble method number  is  \" + methodNo);");
+            accessDispatchMethodBody.append("  com.meituan.robust.RobustLog.d(\"robust\",\"assemble method number  is  \" + methodNo);");
         }
 
 //        patchClass.declaredMethods.each {
@@ -85,7 +85,7 @@ public class PatchesControlFactory {
             if (methodNumber != null) {
                 accessDispatchMethodBody.append(" if((\"" + methodNumber + "\").equals(methodNo)){\n");
                 if (Constants.isLogging) {
-                    accessDispatchMethodBody.append("  android.util.Log.d(\"robust\",\"invoke method is " + method.getLongName() + " \" );");
+                    accessDispatchMethodBody.append("  com.meituan.robust.RobustLog.d(\"robust\",\"invoke method is " + method.getLongName() + " \" );");
                 }
                 String methodName = method.getName();
                 if (AccessFlag.isPrivate(method.getModifiers())) {
@@ -153,11 +153,11 @@ public class PatchesControlFactory {
         StringBuilder isSupportBuilder = new StringBuilder();
         StringBuilder methodsIdBuilder = new StringBuilder();
         if (Constants.isLogging) {
-            isSupportBuilder.append("  android.util.Log.d(\"robust\",\"arrivied in isSupport \"+methodName+\" paramArrayOfObject  \" +paramArrayOfObject);");
+            isSupportBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\"arrivied in isSupport \"+methodName+\" paramArrayOfObject  \" +paramArrayOfObject);");
         }
         isSupportBuilder.append("String methodNo=$1.split(\":\")[3];\n");
         if (Constants.isLogging) {
-            isSupportBuilder.append("  android.util.Log.d(\"robust\",\"in isSupport assemble method number  is  \" + methodNo);");
+            isSupportBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\"in isSupport assemble method number  is  \" + methodNo);");
         }
         for (CtMethod method : patchClass.getDeclaredMethods()) {
             String methodSignure = JavaUtils.getJavaMethodSignure(method).replaceAll(patchClass.getName(), modifiedClassName);
@@ -171,7 +171,7 @@ public class PatchesControlFactory {
         }
 
         if (Constants.isLogging) {
-            isSupportBuilder.append("  android.util.Log.d(\"robust\",\"arrivied in isSupport \"+methodName+\" paramArrayOfObject  \" +paramArrayOfObject+\" isSupport result is \"+\"" + methodsIdBuilder.toString() + "\".contains(\":\" + methodNo + \":\"));");
+            isSupportBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\"arrivied in isSupport \"+methodName+\" paramArrayOfObject  \" +paramArrayOfObject+\" isSupport result is \"+\"" + methodsIdBuilder.toString() + "\".contains(\":\" + methodNo + \":\"));");
         }
         isSupportBuilder.append("return \"" + methodsIdBuilder.toString() + "\".contains(\":\" + methodNo + \":\");");
         return isSupportBuilder.toString();

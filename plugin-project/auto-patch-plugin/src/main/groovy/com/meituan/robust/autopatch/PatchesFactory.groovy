@@ -258,7 +258,7 @@ class PatchesFactory {
                         + "(" + patchClass.getName() + " patchInstance," + modifiedClass.getName() + " modifiedInstance){");
             }
             if (Constants.isLogging) {
-                methodBuilder.append("android.util.Log.d(\"robust\", \" invoke  " + invokeSuperMethodList.get(index).getLongName() + " staticRobust method \");");
+                methodBuilder.append("com.meituan.robust.RobustLog.d(\"robust\", \" invoke  " + invokeSuperMethodList.get(index).getLongName() + " staticRobust method \");");
             }
             if (AccessFlag.isPackage(invokeSuperMethodList.get(index).getModifiers())) {
                 throw new RuntimeException("autopatch does not support super method with package accessible ");

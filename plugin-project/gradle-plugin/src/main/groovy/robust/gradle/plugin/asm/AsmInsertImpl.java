@@ -3,6 +3,7 @@ package robust.gradle.plugin.asm;
 import com.meituan.robust.ChangeQuickRedirect;
 import com.meituan.robust.Constants;
 
+import org.gradle.api.Project;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -41,8 +42,8 @@ public class AsmInsertImpl extends InsertcodeStrategy {
     public static final String CONSTRUCTOR = "<init>";
     public static final String CLASS_INITIALIZER = "<clinit>";
 
-    public AsmInsertImpl(List<String> hotfixPackageList, List<String> hotfixMethodList, List<String> exceptPackageList, List<String> exceptMethodList, boolean isHotfixMethodLevel, boolean isExceptMethodLevel, boolean isForceInsertLambda) {
-        super(hotfixPackageList, hotfixMethodList, exceptPackageList, exceptMethodList, isHotfixMethodLevel, isExceptMethodLevel, isForceInsertLambda);
+    public AsmInsertImpl(Project project,List<String> hotfixPackageList, List<String> hotfixMethodList, List<String> exceptPackageList, List<String> exceptMethodList, boolean isHotfixMethodLevel, boolean isExceptMethodLevel, boolean isForceInsertLambda) {
+        super(project,hotfixPackageList, hotfixMethodList, exceptPackageList, exceptMethodList, isHotfixMethodLevel, isExceptMethodLevel, isForceInsertLambda);
     }
 
     @Override
@@ -50,10 +51,10 @@ public class AsmInsertImpl extends InsertcodeStrategy {
         ZipOutputStream outStream = new JarOutputStream(new FileOutputStream(jarFile));
         //get every class in the box ,ready to insert code
         for (CtClass ctClass : box) {
-            System.out.println("insertCode:" + ctClass.getName());
             //change modifier to public ,so all the class in the apk will be public ,you will be able to access it in the patch
             ctClass.setModifiers(AccessFlag.setPublic(ctClass.getModifiers()));
             if (isNeedInsertClass(ctClass.getName()) && !(ctClass.isInterface() || ctClass.getDeclaredMethods().length < 1)) {
+                printLog("insertCode:" + ctClass.getName());
                 //only insert code into specific classes
                 zipFile(transformCode(ctClass.toBytecode(), ctClass.getName().replaceAll("\\.", "/")), outStream, ctClass.getName().replaceAll("\\.", "/") + ".class");
             } else {

@@ -2,7 +2,6 @@ package com.meituan.robust;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -33,7 +32,7 @@ public class PatchExecutor extends Thread {
             //应用补丁列表
             applyPatchList(patches);
         } catch (Throwable t) {
-            Log.e("robust", "PatchExecutor run", t);
+            RobustLog.e("robust", "PatchExecutor run", t);
             robustCallBack.exceptionNotify(t, "class:PatchExecutor,method:run,line:36");
         }
     }
@@ -50,12 +49,13 @@ public class PatchExecutor extends Thread {
      */
     protected void applyPatchList(List<Patch> patches) {
         if (null == patches || patches.isEmpty()) {
+            RobustLog.d("robust", " patchManipulate list size is empty");
             return;
         }
-        Log.d("robust", " patchManipulate list size is " + patches.size());
+        RobustLog.d("robust", " patchManipulate list size is " + patches.size());
         for (Patch p : patches) {
             if (p.isAppliedSuccess()) {
-                Log.d("robust", "p.isAppliedSuccess() skip " + p.getLocalPath());
+                RobustLog.d("robust", "p.isAppliedSuccess() skip " + p.getLocalPath());
                 continue;
             }
             if (patchManipulate.ensurePatchExist(p)) {
@@ -63,7 +63,7 @@ public class PatchExecutor extends Thread {
                 try {
                     currentPatchResult = patch(context, p);
                 } catch (Throwable t) {
-                    robustCallBack.exceptionNotify(t, "class:PatchExecutor method:applyPatchList line:69");
+                    robustCallBack.exceptionNotify(t, "class:PatchExecutor method:applyPatchList patch error:" + t.getMessage());
                 }
                 if (currentPatchResult) {
                     //设置patch 状态为成功
@@ -76,14 +76,17 @@ public class PatchExecutor extends Thread {
                     robustCallBack.onPatchApplied(false, p);
                 }
 
-                Log.d("robust", "patch LocalPath:" + p.getLocalPath() + ",apply result " + currentPatchResult);
+                RobustLog.d("robust", "patch LocalPath:" + p.getLocalPath() + ",apply result: " + currentPatchResult);
 
+            } else {
+                RobustLog.d("robust", p.getLocalPath() + ",ensurePatchExist result " + false);
             }
         }
     }
 
     protected boolean patch(Context context, Patch patch) {
         if (!patchManipulate.verifyPatch(context, patch)) {
+            RobustLog.e("robust", "patch:" + patch.getLocalPath() + ", verifyPatch result: " + false);
             robustCallBack.logNotify("verifyPatch failure, patch info:" + "id = " + patch.getName() + ",md5 = " + patch.getMd5(), "class:PatchExecutor method:patch line:107");
             return false;
         }
@@ -98,6 +101,7 @@ public class PatchExecutor extends Thread {
             throwable.printStackTrace();
         }
         if (null == classLoader) {
+            RobustLog.e("robust", "patch:" + patch.getLocalPath() + ", classloader is null");
             return false;
         }
 
@@ -106,14 +110,15 @@ public class PatchExecutor extends Thread {
         Class patchesInfoClass;
         PatchesInfo patchesInfo = null;
         try {
-            Log.d("robust", "patch patch_info_name:" + patch.getPatchesInfoImplClassFullName());
+            RobustLog.d("robust", "patch patch_info_name:" + patch.getPatchesInfoImplClassFullName());
             patchesInfoClass = classLoader.loadClass(patch.getPatchesInfoImplClassFullName());
             patchesInfo = (PatchesInfo) patchesInfoClass.newInstance();
         } catch (Throwable t) {
-            Log.e("robust", "patch failed 188 ", t);
+            RobustLog.e("robust", "patch failed ,patchesInfoClass.newInstance ", t);
         }
 
         if (patchesInfo == null) {
+            RobustLog.e("robust", "patch patchesInfo is null");
             robustCallBack.logNotify("patchesInfo is null, patch info:" + "id = " + patch.getName() + ",md5 = " + patch.getMd5(), "class:PatchExecutor method:patch line:114");
             return false;
         }
@@ -134,7 +139,7 @@ public class PatchExecutor extends Thread {
                 robustCallBack.logNotify("patchedClasses or patchClassName is empty, patch info:" + "id = " + patch.getName() + ",md5 = " + patch.getMd5(), "class:PatchExecutor method:patch line:131");
                 continue;
             }
-            Log.d("robust", "current path:" + patchedClassName);
+            RobustLog.d("robust", "current path:" + patchedClassName);
             try {
                 try {
                     sourceClass = classLoader.loadClass(patchedClassName.trim());
@@ -145,7 +150,7 @@ public class PatchExecutor extends Thread {
                 }
 
                 Field[] fields = sourceClass.getDeclaredFields();
-                Log.d("robust", "oldClass :" + sourceClass + "     fields " + fields.length);
+                RobustLog.d("robust", "oldClass :" + sourceClass + "     fields " + fields.length);
                 Field changeQuickRedirectField = null;
                 for (Field field : fields) {
                     if (TextUtils.equals(field.getType().getCanonicalName(), ChangeQuickRedirect.class.getCanonicalName()) && TextUtils.equals(field.getDeclaringClass().getCanonicalName(), sourceClass.getCanonicalName())) {
@@ -155,26 +160,26 @@ public class PatchExecutor extends Thread {
                 }
                 if (changeQuickRedirectField == null) {
                     robustCallBack.logNotify("changeQuickRedirectField  is null, patch info:" + "id = " + patch.getName() + ",md5 = " + patch.getMd5(), "class:PatchExecutor method:patch line:147");
-                    Log.d("robust", "current path:" + patchedClassName + " something wrong !! can  not find:ChangeQuickRedirect in" + patchClassName);
+                    RobustLog.d("robust", "current path:" + patchedClassName + " something wrong !! can  not find:ChangeQuickRedirect in" + patchClassName);
                     continue;
                 }
-                Log.d("robust", "current path:" + patchedClassName + " find:ChangeQuickRedirect " + patchClassName);
+                RobustLog.d("robust", "current path:" + patchedClassName + " find:ChangeQuickRedirect " + patchClassName);
                 try {
                     patchClass = classLoader.loadClass(patchClassName);
                     Object patchObject = patchClass.newInstance();
                     changeQuickRedirectField.setAccessible(true);
                     changeQuickRedirectField.set(null, patchObject);
-                    Log.d("robust", "changeQuickRedirectField set success " + patchClassName);
+                    RobustLog.d("robust", "changeQuickRedirectField set success " + patchClassName);
                 } catch (Throwable t) {
-                    Log.e("robust", "patch failed! ");
+                    RobustLog.e("robust", "patch failed! ");
                     robustCallBack.exceptionNotify(t, "class:PatchExecutor method:patch line:163");
                 }
             } catch (Throwable t) {
-                Log.e("robust", "patch failed! ");
+                RobustLog.e("robust", "patch failed! ");
 //                robustCallBack.exceptionNotify(t, "class:PatchExecutor method:patch line:169");
             }
         }
-        Log.d("robust", "patch finished ");
+        RobustLog.d("robust", "patch finished ");
         if (isClassNotFoundException) {
             return false;
         }

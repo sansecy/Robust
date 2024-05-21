@@ -1,9 +1,7 @@
 package com.meituan.robust;
 
 import android.text.TextUtils;
-import android.util.Log;
 
-import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**

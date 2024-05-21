@@ -2,6 +2,8 @@ package robust.gradle.plugin.javaassist;
 
 import com.meituan.robust.Constants;
 
+import org.gradle.api.Project;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,8 +37,8 @@ import robust.gradle.plugin.InsertcodeStrategy;
 
 public class JavaAssistInsertImpl extends InsertcodeStrategy {
 
-    public JavaAssistInsertImpl(List<String> hotfixPackageList, List<String> hotfixMethodList, List<String> exceptPackageList, List<String> exceptMethodList, boolean isHotfixMethodLevel, boolean isExceptMethodLevel, boolean isForceInsertLambda) {
-        super(hotfixPackageList, hotfixMethodList, exceptPackageList, exceptMethodList, isHotfixMethodLevel, isExceptMethodLevel, isForceInsertLambda);
+    public JavaAssistInsertImpl(Project project,List<String> hotfixPackageList, List<String> hotfixMethodList, List<String> exceptPackageList, List<String> exceptMethodList, boolean isHotfixMethodLevel, boolean isExceptMethodLevel, boolean isForceInsertLambda) {
+        super(project, hotfixPackageList, hotfixMethodList, exceptPackageList, exceptMethodList, isHotfixMethodLevel, isExceptMethodLevel, isForceInsertLambda);
     }
 
     @Override
@@ -44,8 +46,8 @@ public class JavaAssistInsertImpl extends InsertcodeStrategy {
         ZipOutputStream outStream = new JarOutputStream(new FileOutputStream(jarFile));
 //        new ForkJoinPool().submit {
         for (CtClass ctClass : box) {
-            System.out.println("insertCode:" + ctClass.getName());
             if (isNeedInsertClass(ctClass.getName())) {
+                printLog("insertCode:" + ctClass.getName());
                 //change class modifier
                 ctClass.setModifiers(AccessFlag.setPublic(ctClass.getModifiers()));
                 if (ctClass.isInterface() || ctClass.getDeclaredMethods().length < 1) {
@@ -93,7 +95,7 @@ public class JavaAssistInsertImpl extends InsertcodeStrategy {
                     } catch (Throwable t) {
                         //here we ignore the error
                         t.printStackTrace();
-                        System.out.println("ctClass: " + ctClass.getName() + " error: " + t.getMessage());
+                        printLog("ctClass: " + ctClass.getName() + " error: " + t.getMessage());
                     }
                 }
             }

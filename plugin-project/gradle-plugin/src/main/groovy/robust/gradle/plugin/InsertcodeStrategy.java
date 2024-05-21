@@ -1,5 +1,10 @@
 package robust.gradle.plugin;
 
+import com.meituan.robust.Constants;
+import com.meituan.robust.utils.InfoWriter;
+
+import org.gradle.api.Project;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +24,7 @@ import javassist.NotFoundException;
  */
 
 public abstract class InsertcodeStrategy {
+    private InfoWriter infoWriter;
     //packnames need to be insert code 需要插桩的包名列表，
     protected List<String> hotfixPackageList = new ArrayList<>();
     //methods list need to insert code 需要插桩的方法列表
@@ -42,7 +48,7 @@ public abstract class InsertcodeStrategy {
     //record every method with unique method number, use LinkedHashMap to keep order for printing
     public HashMap<String, Integer> methodMap = new LinkedHashMap<>();
 
-    public InsertcodeStrategy(List<String> hotfixPackageList, List<String> hotfixMethodList, List<String> exceptPackageList, List<String> exceptMethodList, boolean isHotfixMethodLevel, boolean isExceptMethodLevel, boolean isForceInsertLambda) {
+    public InsertcodeStrategy(Project project, List<String> hotfixPackageList, List<String> hotfixMethodList, List<String> exceptPackageList, List<String> exceptMethodList, boolean isHotfixMethodLevel, boolean isExceptMethodLevel, boolean isForceInsertLambda) {
         this.hotfixPackageList = hotfixPackageList;
         this.hotfixMethodList = hotfixMethodList;
         this.exceptPackageList = exceptPackageList;
@@ -51,6 +57,11 @@ public abstract class InsertcodeStrategy {
         this.isExceptMethodLevel = isExceptMethodLevel;
         this.isForceInsertLambda = isForceInsertLambda;
         insertMethodCount.set(0);
+        try {
+            infoWriter = new InfoWriter(project.getBuildDir().getPath() + Constants.INSERT_CODE_PATH);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -87,6 +98,12 @@ public abstract class InsertcodeStrategy {
             zos.flush();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    protected void printLog(String log) {
+        if (infoWriter != null) {
+            infoWriter.writeLineToInfoFile(log);
         }
     }
 }

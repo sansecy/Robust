@@ -86,7 +86,7 @@ class ReflectUtils {
                 }
             }
             if (Constants.isLogging) {
-                stringBuilder.append("  android.util.Log.d(\"robust\",\"set static  value is \" +\"" + (field.getName()) + " ${getCoutNumber()}\");");
+                stringBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\"set static  value is \" +\"" + (field.getName()) + " ${getCoutNumber()}\");");
             }
         } else {
             stringBuilder.append("java.lang.Object instance;");
@@ -98,7 +98,7 @@ class ReflectUtils {
             stringBuilder.append("}");
             stringBuilder.append(Constants.ROBUST_UTILS_FULL_NAME + ".setFieldValue(\"" + getMappingValue(field.name, memberMappingInfo) + "\",instance,\$1,${field.declaringClass.name}.class);");
             if (Constants.isLogging) {
-                stringBuilder.append("  android.util.Log.d(\"robust\",\"set value is \" + \"" + (field.getName()) + "    ${getCoutNumber()}\");");
+                stringBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\"set value is \" + \"" + (field.getName()) + "    ${getCoutNumber()}\");");
             }
         }
         stringBuilder.append("}")
@@ -131,7 +131,7 @@ class ReflectUtils {
                 }
             }
             if (Constants.isLogging) {
-                stringBuilder.append("  android.util.Log.d(\"robust\",\"get static  value is \" +\"" + (field.getName()) + "    ${getCoutNumber()}\");");
+                stringBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\"get static  value is \" +\"" + (field.getName()) + "    ${getCoutNumber()}\");");
             }
         } else {
             stringBuilder.append("java.lang.Object instance;");
@@ -143,7 +143,7 @@ class ReflectUtils {
 
             stringBuilder.append("\$_=(\$r) " + Constants.ROBUST_UTILS_FULL_NAME + ".getFieldValue(\"" + getMappingValue(field.name, memberMappingInfo) + "\",instance,${field.declaringClass.name}.class);");
             if (Constants.isLogging) {
-                stringBuilder.append("  android.util.Log.d(\"robust\",\"get value is \" +\"" + (field.getName()) + "    ${getCoutNumber()}\");");
+                stringBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\"get value is \" +\"" + (field.getName()) + "    ${getCoutNumber()}\");");
             }
         }
         stringBuilder.append("}");
@@ -230,7 +230,7 @@ class ReflectUtils {
             if (signatureBuilder.length() > 1) {
                 stringBuilder.append("java.lang.Object parameters[]=" + Constants.GET_REAL_PARAMETER + "(\$args);");
                 if (Constants.isLogging)
-                    stringBuilder.append("  android.util.Log.d(\"robust\",\" parameters[] from method     ${getCoutNumber()} \"+parameters);");
+                    stringBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\" parameters[] from method     ${getCoutNumber()} \"+parameters);");
 
                 stringBuilder.append("\$_= (\$r)" + Constants.ROBUST_UTILS_FULL_NAME + ".invokeReflectConstruct(\"" + className + "\",parameters,new Class[]{" + signatureBuilder + "});");
 
@@ -257,7 +257,7 @@ class ReflectUtils {
         } else {
             if (signatureBuilder.length() > 1) {
                 if (Constants.isLogging)
-                    stringBuilder.append("  android.util.Log.d(\"robust\",\"  inner Class new     ${getCoutNumber()}\");");
+                    stringBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\"  inner Class new     ${getCoutNumber()}\");");
                 stringBuilder.append("java.lang.Object parameters[]=" + Constants.GET_REAL_PARAMETER + "(\$args);");
                 stringBuilder.append("\$_= (\$r)" + Constants.ROBUST_UTILS_FULL_NAME + ".invokeReflectConstruct(\"" + className + "\",parameters,new Class[]{" + signatureBuilder + "});");
             } else {
@@ -321,7 +321,7 @@ class ReflectUtils {
                         stringBuilder.append("\$_=(\$r)" + Constants.ROBUST_UTILS_FULL_NAME + ".invokeReflectStaticMethod(\"" + getMappingValue(getJavaMethodSignureWithReturnType(methodCall.method), memberMappingInfo) + "\"," + methodCall.method.declaringClass.name + ".class,\$args,null);");
                 }
                 if (Constants.isLogging) {
-                    stringBuilder.append("  android.util.Log.d(\"robust\",\"invoke static  method is      ${getCoutNumber()}  \" +\"" + methodCall.methodName + "\");");
+                    stringBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\"invoke static  method is      ${getCoutNumber()}  \" +\"" + methodCall.methodName + "\");");
                 }
             } else {
                 //在非static method中使用static method
@@ -347,7 +347,7 @@ class ReflectUtils {
                 } else
                     stringBuilder.append("\$_=(\$r)" + Constants.ROBUST_UTILS_FULL_NAME + ".invokeReflectMethod(\"" + getMappingValue(getJavaMethodSignureWithReturnType(methodCall.method), memberMappingInfo) + "\",instance,\$args,null,${methodCall.method.declaringClass.name}.class);");
                 if (Constants.isLogging) {
-                    stringBuilder.append("  android.util.Log.d(\"robust\",\"invoke  method is      ${getCoutNumber()} \" +\"" + methodCall.methodName + "\");");
+                    stringBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\"invoke  method is      ${getCoutNumber()} \" +\"" + methodCall.methodName + "\");");
                 }
             } else {
                 stringBuilder.append("instance=(" + methodCall.method.declaringClass.name + ")\$0;");
@@ -392,11 +392,11 @@ class ReflectUtils {
 
         if (NameManger.getInstance().getPatchNameMap().get(NameManger.getInstance().getInlinePatchNameWithoutRecord(method.declaringClass.name)) != null) {
             if (Constants.isLogging) {
-                stringBuilder.append("  android.util.Log.d(\"robust\",\"deal inline in first   ${getCoutNumber()}  \" +\"" + method.name + "\");");
+                stringBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\"deal inline in first   ${getCoutNumber()}  \" +\"" + method.name + "\");");
             }
             stringBuilder.append(NameManger.getInstance().getInlinePatchName(method.declaringClass.name) + " instance;");
             if (Constants.isLogging) {
-                stringBuilder.append("  android.util.Log.d(\"robust\",\"deal inline method after new instance   ${getCoutNumber()}    \" +\"" + method.name + "\");");
+                stringBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\"deal inline method after new instance   ${getCoutNumber()}    \" +\"" + method.name + "\");");
             }
             if (isInStaticMethod || isNewClass) {
                 //在static method中不需要考虑参数为this的问题
@@ -415,7 +415,7 @@ class ReflectUtils {
                 //这个需要反射来处理，处理方法的每个参数值是否为this，要不然需要很恶心的代码
                 stringBuilder.append("java.lang.Object parameters[]=" + Constants.GET_REAL_PARAMETER + "(\$args);");
                 if (Constants.isLogging) {
-                    stringBuilder.append("  android.util.Log.d(\"robust\",\"deal inline method after new instance    ${getCoutNumber()}   \" +\"" + method.name + "\");");
+                    stringBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\"deal inline method after new instance    ${getCoutNumber()}   \" +\"" + method.name + "\");");
                 }
                 if (!isStatic(method.modifiers)) {
                     if (signatureBuilder.toString().length() > 1) {
@@ -437,7 +437,7 @@ class ReflectUtils {
             throw new RuntimeException("getInLineMemberString cannot find inline class ,origin class is  " + method.declaringClass.name)
         }
         if (Constants.isLogging) {
-            stringBuilder.append("  android.util.Log.d(\"robust\",\"deal inline method   ${getCoutNumber()}   \" +\"" + method.name + "\");");
+            stringBuilder.append("  com.meituan.robust.RobustLog.d(\"robust\",\"deal inline method   ${getCoutNumber()}   \" +\"" + method.name + "\");");
         }
         stringBuilder.append("}")
 //        println("getInLineMemberString  " + stringBuilder.toString())

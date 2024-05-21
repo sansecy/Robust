@@ -1,2 +1,2 @@
-python ~/trace/killjava.py
+python killjava.py
 ./gradlew clean  assembleRelease --stacktrace --no-daemon
